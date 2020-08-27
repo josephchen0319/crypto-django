@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'member.apps.MemberConfig',
+    'filter.apps.FilterConfig',
+    'graphene_django'
 ]
 
 MIDDLEWARE = [
@@ -69,14 +72,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'cryptocracy.wsgi.application'
 
+GRAPHENE = {
+    'SCHEMA': 'app.schema.schema'
+}
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'crypto',
+        'USER': 'crypto',
+        'PASSWORD': '123456',
+        'HOST': 'localhost',
     }
 }
 
