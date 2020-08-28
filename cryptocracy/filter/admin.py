@@ -1,4 +1,9 @@
 from django.contrib import admin
 from .models import Filter
 
-admin.site.register(Filter)
+
+class FilterAdmin(admin.ModelAdmin):
+    readonly_fields = ('id',)
+
+
+admin.site.register(Filter, FilterAdmin)
