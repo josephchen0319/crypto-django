@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'member.apps.MemberConfig',
     'filter.apps.FilterConfig',
-    'graphene_django'
+    'web_crawler.apps.WebCrawlerConfig',
+    'graphene_django',
+    'requests',
 ]
 
 MIDDLEWARE = [

@@ -1,3 +1,6 @@
 *.pyc
 .project
 .DS_Store
+*.ENV
+*.env
+*.yaml

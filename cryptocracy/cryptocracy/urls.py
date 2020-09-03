@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from web_crawler.views import Crawler
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('crawler/', Crawler.as_view()),
 ]
