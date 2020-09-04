@@ -1,14 +1,14 @@
 import json
 
 from tweepy import OAuthHandler, API, Cursor
-import twitter_credentials
+from web_crawler.twitter_credentials import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 from textblob import TextBlob
 import re
-from tweets_streamer import TwitterStreamer
+from web_crawler.tweets_streamer import TwitterStreamer
 import os
 
 
@@ -67,10 +67,10 @@ class TwitterClient():
 class TwitterAuthenticator:
 
     def authenticate(self):
-        auth = OAuthHandler(twitter_credentials.API_KEY,
-                            twitter_credentials.API_SECRET)
-        auth.set_access_token(twitter_credentials.ACCESS_TOKEN,
-                              twitter_credentials.ACCESS_TOKEN_SECRET)
+        auth = OAuthHandler(API_KEY,
+                            API_SECRET)
+        auth.set_access_token(ACCESS_TOKEN,
+                              ACCESS_TOKEN_SECRET)
         return auth
 
 
@@ -186,11 +186,11 @@ def filter_amount(dollar):
         return dollar
 
 
-if __name__ == "__main__":
-    categories = ['crypto', 'defi', 'dapp', 'blockchain']
-    file_name = "tweets.txt"
-    twitter_client = TwitterClient()
-    tweet_analyzer = TwitterAnalyzer()
+# if __name__ == "__main__":
+#     categories = ['crypto', 'defi', 'dapp', 'blockchain']
+#     file_name = "tweets.txt"
+#     twitter_client = TwitterClient()
+#     tweet_analyzer = TwitterAnalyzer()
 
     # with open(os.path.join(os.path.dirname(__file__), os.pardir, 'tweets.txt'), "r") as t:
     #     # remove blank line, turn non-blank line into dict, and add it to tweets list
@@ -201,34 +201,34 @@ if __name__ == "__main__":
     # print(df.head(10))
 
     # query = "crypto OR defi OR dapp OR blockchain"
-    query = "crypto"
-    df = pd.DataFrame()
-    for i in range(1, 50):
-        users = twitter_client.get_relevant_users(
-            query, count=20, page=i)
-        user_df = tweet_analyzer.users_to_dataframe(users)
-        df = df.append(user_df, ignore_index=True)
+    # query = "crypto"
+    # df = pd.DataFrame()
+    # for i in range(1, 50):
+    #     users = twitter_client.get_relevant_users(
+    #         query, count=20, page=i)
+    #     user_df = tweet_analyzer.users_to_dataframe(users)
+    #     df = df.append(user_df, ignore_index=True)
 
     # df['coins'] = np.array([tweet_analyzer.get_coins(d)
     #                         for d in df['description']])
 
-    filtered_coins = []
-    hashtag_list = []
-    for d in df['description']:
-        coins = tweet_analyzer.get_coins(d)
-        coins = list(filter(filter_amount, coins))
-        coins = ' '.join(coins)
-        filtered_coins.append(coins)
-        hashtags = tweet_analyzer.get_hashtags(d)
-        hashtags = ' '.join(hashtags)
-        hashtag_list.append(hashtags)
+    # filtered_coins = []
+    # hashtag_list = []
+    # for d in df['description']:
+    #     coins = tweet_analyzer.get_coins(d)
+    #     coins = list(filter(filter_amount, coins))
+    #     coins = ' '.join(coins)
+    #     filtered_coins.append(coins)
+    #     hashtags = tweet_analyzer.get_hashtags(d)
+    #     hashtags = ' '.join(hashtags)
+    #     hashtag_list.append(hashtags)
 
-    df['coins'] = np.array(filtered_coins)
-    df['hashtags'] = np.array(hashtag_list)
-    coins_counter = tweet_analyzer.count_occurrence(df['coins'])
-    hashtags_counter = tweet_analyzer.count_occurrence(df['hashtags'])
-    print(coins_counter)
-    print(hashtags_counter)
+    # df['coins'] = np.array(filtered_coins)
+    # df['hashtags'] = np.array(hashtag_list)
+    # coins_counter = tweet_analyzer.count_occurrence(df['coins'])
+    # hashtags_counter = tweet_analyzer.count_occurrence(df['hashtags'])
+    # print(coins_counter)
+    # print(hashtags_counter)
 
 
 # search_results = twitter_client.get_search_results(

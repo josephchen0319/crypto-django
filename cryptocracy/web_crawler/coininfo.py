@@ -15,7 +15,6 @@ class Order(Enum):
 
 
 class CoinInfo:
-
     def __init__(self):
         self.base_url = "https://api.coingecko.com/api/v3"
 
@@ -38,10 +37,10 @@ class CoinInfo:
         return r
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # Check server status
     # res = check_server_status()
-    coin_api = CoinInfo()
+    # coin_api = CoinInfo()
 
     # Test list_all_coins
     # res = coin_api.list_all_coins(
