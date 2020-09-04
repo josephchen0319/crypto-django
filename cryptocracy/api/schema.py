@@ -1,8 +1,7 @@
 import graphene
 
-from .querys import Query
-from .mutations import Mutation
-
+from api.base.query import Query
+from api.base.mutation import Mutation
 
 SCHEMA = graphene.Schema(
     query=Query,
