@@ -11,7 +11,7 @@ class Member(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     state = models.CharField(max_length=50, choices=MEMBER_STATE)
-    jwt_token_key = models.CharField(max_length=12, default=get_random_string)
+    # jwt_token_key = models.CharField(max_length=12, default=get_random_string)
 
     def __str__(self):
         return self.user.get_username()
