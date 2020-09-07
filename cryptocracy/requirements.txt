@@ -26,6 +26,7 @@ distlib==0.3.1
 Django==3.1
 django-cors-headers==3.4.0
 django-extensions==3.0.5
+django-graphql-jwt==0.3.1
 django-rest-framework==0.1.0
 django-rest-knox==4.1.0
 django-stubs==1.5.0
@@ -89,6 +90,7 @@ pycodestyle==2.6.0
 pycparser==2.20
 pyee==7.0.2
 Pygments==2.6.1
+PyJWT==1.7.1
 pylint==2.5.3
 pylint-django==2.3.0
 pylint-plugin-utils==0.6
