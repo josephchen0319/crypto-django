@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'cryptocracy.wsgi.application'
 
 GRAPHENE = {
-    'SCHEMA': 'app.schema.schema'
+    'SCHEMA': 'cryptocracy.schema.schema'
 }
 
 # Database

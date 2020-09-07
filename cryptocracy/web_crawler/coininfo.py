@@ -22,10 +22,10 @@ class CoinInfo:
         r = requests.get(COINGECKO_BASE_URL+"/ping")
         return r
 
-    def list_all_coins(self, order=Order.MARKET_CAP_DESC.value, page=1, per_page=100, ids=None):
+    def list_all_coins(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=100, ids=None):
         price_change_percentage = '1h,24h,7d,30d,200d,1y'
         ids = "" if ids == None else ','.join(ids)
-        url = self.base_url + "/coins/markets?vs_currency=usd"
+        url = self.base_url + f'/coins/markets?vs_currency={vs_currency}'
         # per_page from 1 - 250
         paging = f'&page={page}&per_page={per_page}'
         query = f'&order={order}&price_change_percentage={price_change_percentage}&ids={ids}'
@@ -33,7 +33,8 @@ class CoinInfo:
         return r
 
     def get_particular_coin(self, id):
-        r = requests.get(self.base_url+f'/coins/{id}')
+        r = requests.get(
+            self.base_url+f'/coins/{id}?localization=false')
         return r
 
 

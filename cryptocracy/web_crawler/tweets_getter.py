@@ -1,14 +1,16 @@
 import json
 
 from tweepy import OAuthHandler, API, Cursor
-from web_crawler.twitter_credentials import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 from textblob import TextBlob
 import re
+from web_crawler.twitter_credentials import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
+# from twitter_credentials import API_KEY, API_SECRET, ACCESS_TOKEN, ACCESS_TOKEN_SECRET
 from web_crawler.tweets_streamer import TwitterStreamer
+# from tweets_streamer import TwitterStreamer
 import os
 
 
@@ -187,17 +189,16 @@ def filter_amount(dollar):
 
 
 # if __name__ == "__main__":
-#     categories = ['crypto', 'defi', 'dapp', 'blockchain']
-#     file_name = "tweets.txt"
-#     twitter_client = TwitterClient()
-#     tweet_analyzer = TwitterAnalyzer()
+    #     categories = ['crypto', 'defi', 'dapp', 'blockchain']
+    #     file_name = "tweets.txt"
+    # twitter_client = TwitterClient()
+    # tweet_analyzer = TwitterAnalyzer()
 
     # with open(os.path.join(os.path.dirname(__file__), os.pardir, 'tweets.txt'), "r") as t:
-    #     # remove blank line, turn non-blank line into dict, and add it to tweets list
-    #     tweets = [json.loads(line) for line in t if line.strip()]
+    # remove blank line, turn non-blank line into dict, and add it to tweets list
+    # tweets = [json.loads(line) for line in t if line.strip()]
 
     # df = tweet_analyzer.tweets_to_dataframe(tweets)
-
     # print(df.head(10))
 
     # query = "crypto OR defi OR dapp OR blockchain"
@@ -208,9 +209,6 @@ def filter_amount(dollar):
     #         query, count=20, page=i)
     #     user_df = tweet_analyzer.users_to_dataframe(users)
     #     df = df.append(user_df, ignore_index=True)
-
-    # df['coins'] = np.array([tweet_analyzer.get_coins(d)
-    #                         for d in df['description']])
 
     # filtered_coins = []
     # hashtag_list = []
@@ -225,33 +223,33 @@ def filter_amount(dollar):
 
     # df['coins'] = np.array(filtered_coins)
     # df['hashtags'] = np.array(hashtag_list)
+    # print(df.head(10))
     # coins_counter = tweet_analyzer.count_occurrence(df['coins'])
     # hashtags_counter = tweet_analyzer.count_occurrence(df['hashtags'])
     # print(coins_counter)
     # print(hashtags_counter)
 
+    # search_results = twitter_client.get_search_results(
+    #     "#crypto OR #defi OR #dapp OR #blockchain OR crypto OR defi OR dapp OR blockchain", 500)
+    # df = tweet_analyzer.tweets_to_dataframe(search_results)
 
-# search_results = twitter_client.get_search_results(
-#     "#crypto OR #defi OR #dapp OR #blockchain OR crypto OR defi OR dapp OR blockchain", 500)
-# df = tweet_analyzer.tweets_to_dataframe(search_results)
+    # df['sentiment'] = np.array(
+    #     [tweet_analyzer.analyze_sentiment(tweet) for tweet in df['tweets']])
 
-# df['sentiment'] = np.array(
-#     [tweet_analyzer.analyze_sentiment(tweet) for tweet in df['tweets']])
+    # filtered_coins = []
+    # hashtag_list = []
+    # for tweet in df['tweets']:
+    #     coins = twitter_client.get_coins(tweet)
+    #     coins = list(filter(filter_amount, coins))
+    #     coins = ' '.join(coins)
+    #     filtered_coins.append(coins)
+    #     hashtags = twitter_client.get_hashtags(tweet)
+    #     hashtags = ' '.join(hashtags)
+    #     hashtag_list.append(hashtags)
 
-# filtered_coins = []
-# hashtag_list = []
-# for tweet in df['tweets']:
-#     coins = twitter_client.get_coins(tweet)
-#     coins = list(filter(filter_amount, coins))
-#     coins = ' '.join(coins)
-#     filtered_coins.append(coins)
-#     hashtags = twitter_client.get_hashtags(tweet)
-#     hashtags = ' '.join(hashtags)
-#     hashtag_list.append(hashtags)
-
-# df['coins'] = np.array(filtered_coins, dtype=object)
-# df['hashtags'] = np.array(hashtag_list, dtype=object)
-
+    # df['coins'] = np.array(filtered_coins, dtype=object)
+    # df['hashtags'] = np.array(hashtag_list, dtype=object)
+    # print(df.head(10))
 
 # counts = df.coins.str.split().explode().value_counts()
 # print(counts.to_json())
