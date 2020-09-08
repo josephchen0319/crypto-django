@@ -7,6 +7,7 @@ from api.views import GraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('graphql/', csrf_exempt(GraphQLView.as_view(schema=SCHEMA, graphiql=True))),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(schema=SCHEMA,
+                                                     graphiql=True)), name="api"),
 
 ]

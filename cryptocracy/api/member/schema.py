@@ -1,6 +1,6 @@
 import graphene
 
-from .querys import Query
+from .queries import Query
 from .mutations import Mutation
 
 

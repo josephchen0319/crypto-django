@@ -23,10 +23,12 @@ class Notification(models.Model):
         ('Crypto Signal', 'Crypto Signal'),
         ('Friend', 'Friend'),
     ]
-    member = models.ForeignKey('Member', on_delete=models.CASCADE)
+    member = models.ForeignKey(
+        Member, on_delete=models.CASCADE, related_name="notifications_member")
     category = models.CharField(max_length=50, choices=NOTIFICATION_CATEGORY)
     title = models.CharField(max_length=50)
     content = models.TextField()
+    state = models.CharField(max_length=50)
     created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
@@ -41,8 +43,8 @@ class Following(models.Model):
         ('Partial', 'Partial'),
     ]
     member = models.ForeignKey('Member', on_delete=models.CASCADE)
-    crypto_name = models.CharField(max_length=50)
-    crypto_symbol = models.CharField(max_length=50)
+    crypto_id = models.CharField(max_length=200)
+    crypto_symbol = models.CharField(max_length=200)
     state = models.CharField(max_length=50, choices=FOLLOWING_STATE)
     created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
@@ -54,29 +56,31 @@ class Following(models.Model):
 class Saved_filter_group(models.Model):
     member = models.ForeignKey('Member', on_delete=models.CASCADE)
     group_name = models.CharField(max_length=50)
-    # group_id = models.CharField(max_length=20)
-    # filter = models.ManyToManyField(
-    #     'filter.Filter',
-    #     related_name='member_saved_filter_group_filter',
-    # )
-    # first_argument = models.IntegerField(blank=True, null=True)
-    # second_argument = models.IntegerField(blank=True, null=True)
-    # third_argument = models.IntegerField(blank=True, null=True)
-    # fourth_argument = models.IntegerField(blank=True, null=True)
-    # fifth_argument = models.IntegerField(blank=True, null=True)
+    state = models.CharField(max_length=50)
+    filters = models.ManyToManyField(
+        'filter.Filter',
+        related_name='saved_filter_group_filter',
+    )
+    first_argument = models.IntegerField(blank=True, null=True)
+    second_argument = models.IntegerField(blank=True, null=True)
+    third_argument = models.IntegerField(blank=True, null=True)
+    fourth_argument = models.IntegerField(blank=True, null=True)
+    fifth_argument = models.IntegerField(blank=True, null=True)
+    created_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.group_name
 
 
-class Filter_group_detail(models.Model):
-    group = models.ForeignKey('Saved_filter_group', on_delete=models.CASCADE)
-    filter = models.ForeignKey('filter.Filter', on_delete=models.CASCADE)
-    first_argument = models.BigIntegerField(blank=True, null=True)
-    second_argument = models.BigIntegerField(blank=True, null=True)
-    third_argument = models.BigIntegerField(blank=True, null=True)
-    fourth_argument = models.BigIntegerField(blank=True, null=True)
-    fifth_argument = models.BigIntegerField(blank=True, null=True)
+# class Filter_group_detail(models.Model):
+#     group = models.ForeignKey('Saved_filter_group', on_delete=models.CASCADE)
+#     filter = models.ForeignKey('filter.Filter', on_delete=models.CASCADE)
+#     first_argument = models.BigIntegerField(blank=True, null=True)
+#     second_argument = models.BigIntegerField(blank=True, null=True)
+#     third_argument = models.BigIntegerField(blank=True, null=True)
+#     fourth_argument = models.BigIntegerField(blank=True, null=True)
+#     fifth_argument = models.BigIntegerField(blank=True, null=True)
 
-    def __str__(self):
-        return self.filter.filter_content
+#     def __str__(self):
+#         return self.filter.filter_content

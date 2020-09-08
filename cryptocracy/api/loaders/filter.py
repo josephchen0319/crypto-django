@@ -10,7 +10,7 @@ class FilterLoaders:
         return DataLoader(filter_load_fn)
 
         # @cached_property
-        # def filters_from_author(self) -> DataLoader:
+        # def filters_from_member(self) -> DataLoader:
         #     stories_from_author_load_fn = batch_load_foreign_key(
         #         'story', 'Story', 'author')
         #     return DataLoader(stories_from_author_load_fn)

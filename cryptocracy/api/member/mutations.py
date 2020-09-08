@@ -5,6 +5,7 @@ import graphql_jwt
 
 
 class CreateMember(graphene.Mutation):
+    id = graphene.ID()
     user = graphene.Field(queries.UserType)
     # member = graphene.Field(queries.MemberType)
     state = graphene.String()
@@ -28,6 +29,7 @@ class CreateMember(graphene.Mutation):
 
 
 class UpdateMember(graphene.Mutation):
+    id = graphene.ID()
     user = graphene.Field(queries.UserType)
     state = graphene.String()
 
@@ -59,6 +61,39 @@ class UpdateMember(graphene.Mutation):
         return UpdateMember(user=user, state=state)
 
 
+class CreateNotification(graphene.Mutation):
+    id = graphene.ID()
+    category = graphene.String()
+    title = graphene.String()
+    content = graphene.String()
+    member = graphene.Field(queries.MemberType)
+
+    class Arguments:
+        category = graphene.String()
+        title = graphene.String()
+        content = graphene.String()
+
+    def mutate(parent, info, category, title, content):
+        user = info.context.user or None
+        if user.is_anonymous:
+            raise Exception("Not logged In!")
+        notification = models.Notification(
+            category=category,
+            title=title,
+            content=content,
+            member=user.member,
+        )
+        notification.save()
+        return CreateNotification(
+            id=notification.id,
+            category=notification.category,
+            title=notification.title,
+            content=notification.content,
+            member=notification.member,
+        )
+
+
 class Mutation(graphene.ObjectType):
     create_member = CreateMember.Field()
     update_member = UpdateMember.Field()
+    create_notification = CreateNotification.Field()
