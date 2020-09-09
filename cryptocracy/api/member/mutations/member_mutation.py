@@ -1,13 +1,14 @@
 import graphene
-from api.member import queries
+from ..types import UserType, MemberType
 from member import models
 import graphql_jwt
+from django.contrib.auth.models import User
 
 
 class CreateMember(graphene.Mutation):
     id = graphene.ID()
-    user = graphene.Field(queries.UserType)
-    # member = graphene.Field(queries.MemberType)
+    user = graphene.Field(UserType)
+    # member = graphene.Field(MemberType)
     state = graphene.String()
 
     class Arguments:
@@ -19,9 +20,8 @@ class CreateMember(graphene.Mutation):
 
     def mutate(parent, info, username, email, password, first_name="", last_name=""):
 
-        user = models.User.objects.create(
-            username=username, email=email, first_name=first_name, last_name=last_name)
-        user.set_password(password)
+        user = User.objects.create_user(
+            username=username, email=email, password=password, first_name=first_name, last_name=last_name)
         state = "Verified"
         member = models.Member.objects.create(user=user, state=state)
         member.save()
@@ -30,7 +30,7 @@ class CreateMember(graphene.Mutation):
 
 class UpdateMember(graphene.Mutation):
     id = graphene.ID()
-    user = graphene.Field(queries.UserType)
+    user = graphene.Field(UserType)
     state = graphene.String()
 
     class Arguments:
@@ -66,7 +66,7 @@ class CreateNotification(graphene.Mutation):
     category = graphene.String()
     title = graphene.String()
     content = graphene.String()
-    member = graphene.Field(queries.MemberType)
+    member = graphene.Field(MemberType)
 
     class Arguments:
         category = graphene.String()
@@ -93,7 +93,7 @@ class CreateNotification(graphene.Mutation):
         )
 
 
-class Mutation(graphene.ObjectType):
+class MemberMutation(graphene.ObjectType):
     create_member = CreateMember.Field()
     update_member = UpdateMember.Field()
     create_notification = CreateNotification.Field()

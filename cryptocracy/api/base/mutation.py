@@ -1,5 +1,5 @@
 from api.filter.mutations import Mutation as FilterMutation
-from api.member.mutations import Mutation as MemberMutation
+from api.member.mutations.base_mutation import Mutation as MemberMutation
 import graphql_jwt
 
 
