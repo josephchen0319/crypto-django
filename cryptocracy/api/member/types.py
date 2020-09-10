@@ -120,6 +120,7 @@ class SavedFilterGroupType(graphene.ObjectType):
         return isinstance(root, models.SavedFilterGroup)
 
     @classmethod
+    @login_required
     def get_node(cls, info: graphene.ResolveInfo, decoded_id: str):
         key = int(decoded_id)
         return info.context.loaders.saved_filter_group.load(key)

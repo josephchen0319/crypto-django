@@ -11,7 +11,6 @@ class Member(models.Model):
     ]
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     state = models.CharField(max_length=50, choices=MEMBER_STATE)
-    # jwt_token_key = models.CharField(max_length=12, default=get_random_string)
 
     def __str__(self):
         return self.user.get_username()
@@ -74,11 +73,11 @@ class FilterDetail(models.Model):
         'SavedFilterGroup', on_delete=models.CASCADE)
     filter = models.ForeignKey('filter.Filter', on_delete=models.CASCADE)
     state = models.CharField(max_length=50)
-    first_argument = models.BigIntegerField(blank=True, null=True)
-    second_argument = models.BigIntegerField(blank=True, null=True)
-    third_argument = models.BigIntegerField(blank=True, null=True)
-    fourth_argument = models.BigIntegerField(blank=True, null=True)
-    fifth_argument = models.BigIntegerField(blank=True, null=True)
+    first_argument = models.FloatField(blank=True, null=True)
+    second_argument = models.FloatField(blank=True, null=True)
+    third_argument = models.FloatField(blank=True, null=True)
+    fourth_argument = models.FloatField(blank=True, null=True)
+    fifth_argument = models.FloatField(blank=True, null=True)
     created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
