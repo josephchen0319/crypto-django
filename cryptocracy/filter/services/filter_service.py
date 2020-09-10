@@ -6,16 +6,16 @@ from filter.models import Filter
 class FilterService(serializers.Serializer):
 
     category = serializers.CharField()
+    filter_name = serializers.CharField()
     filter_content = serializers.CharField()
-    formula_id = serializers.CharField()
 
     def create(self, validated_data: dict) -> Filter:
         return Filter.objects.create(**validated_data)
 
     def update(self, instance: Filter, validated_data: dict) -> Filter:
         instance.category = validated_data['category']
+        instance.filter_name = validated_data['filter_name']
         instance.filter_content = validated_data['filter_content']
-        instance.formula_id = validated_data['formula_id']
         instance.save()
         return instance
 

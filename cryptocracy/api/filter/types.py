@@ -1,6 +1,8 @@
-import graphene
-from promise import Promise
 from filter import models
+import graphene
+from graphql_jwt.decorators import login_required, superuser_required
+from promise import Promise
+from api.utils import from_global_id
 
 
 class FilterType(graphene.ObjectType):
@@ -8,10 +10,16 @@ class FilterType(graphene.ObjectType):
         interfaces = (graphene.Node,)
 
     category = graphene.String()
+    filter_name = graphene.String()
     filter_content = graphene.String()
-    formula_id = graphene.String()
     created_time = graphene.DateTime()
     updated_time = graphene.DateTime()
+    filter_details = graphene.relay.ConnectionField(
+        'api.member.types.FilterDetailConnection')
+
+    @staticmethod
+    def resolve_filter_details(root, info):
+        return info.context.loaders.filter_details_from_filter.load(root.id)
 
     @classmethod
     def is_type_of(cls, root, info: graphene.ResolveInfo) -> bool:
@@ -24,15 +32,5 @@ class FilterType(graphene.ObjectType):
 
 
 class FilterConnection(graphene.Connection):
-
     class Meta:
         node = FilterType
-
-
-class Query(graphene.ObjectType):
-    filters = graphene.ConnectionField(FilterConnection)
-    node = graphene.Node.Field()
-
-    @ staticmethod
-    def resolve_filters(root: None, info: graphene.ResolveInfo, **kwargs):
-        return models.Filter.objects.all()

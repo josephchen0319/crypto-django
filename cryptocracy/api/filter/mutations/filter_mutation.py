@@ -4,47 +4,49 @@ from typing import Any
 import graphene
 from filter.models import Filter
 from filter.services import FilterService
+from api.utils import from_global_id
 
 
-class CreateFilter(graphene.ClientIDMutation):
+class CreateFilter(graphene.relay.ClientIDMutation):
 
     class Input:
         category = graphene.String()
+        filter_name = graphene.String()
         filter_content = graphene.String()
-        formula_id = graphene.String()
 
-    filter = graphene.Field('api.filter.queries.FilterType')
+    filter = graphene.Field('api.filter.types.FilterType')
 
     @classmethod
     def mutate_and_get_payload(cls, root: Any, info: graphene.ResolveInfo,
                                **input_data: dict) -> 'CreateFilter':
         serializer = FilterService(data={
             'category': input_data['category'],
+            'filter_name': input_data['filter_name'],
             'filter_content': input_data['filter_content'],
-            'formula_id': input_data['formula_id'],
         })
         serializer.is_valid(raise_exception=True)
         filter = serializer.save()
         return cls(filter=filter)
 
 
-class UpdateFilter(graphene.ClientIDMutation):
+class UpdateFilter(graphene.relay.ClientIDMutation):
     class Input:
         filter_id = graphene.ID()
         category = graphene.String()
+        filter_name = graphene.String()
         filter_content = graphene.String()
-        formula_id = graphene.String()
 
-    filter = graphene.Field('api.filter.queries.FilterType')
+    filter = graphene.Field('api.filter.types.FilterType')
 
     @classmethod
     def mutate_and_get_payload(cls, root: Any, info: graphene.ResolveInfo,
                                **input_data: dict) -> 'UpdateFilter':
-        filter_id = input_data['filter_id']  # type: ignore
+
+        filter_id = int(from_global_id(input_data['filter_id']).type_id)
         serializer = FilterService.for_instance(filter_id, data={
             'category': input_data['category'],
+            'filter_name': input_data['filter_name'],
             'filter_content': input_data['filter_content'],
-            'formula_id': input_data['formula_id']
         })
         serializer.is_valid(raise_exception=True)
         filter = serializer.save()
@@ -60,12 +62,9 @@ class DeleteFilter(graphene.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root: Any, info: graphene.ResolveInfo,
                                **input_data: dict) -> 'DeleteFilter':
-        filter_id = input_data['filter_id']
+        filter_id = int(from_global_id(input_data['filter_id']).type_id)
         ok = FilterService.delete(filter_id)
         return cls(ok=str(ok))
-        # obj = Filter.objects.get(pk=filter_id)
-        # obj.delete()
-        # return cls(ok=True)
 
 
 class Mutation(graphene.ObjectType):

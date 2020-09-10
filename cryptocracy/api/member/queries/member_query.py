@@ -10,7 +10,6 @@ class MemberQuery(graphene.ObjectType):
     node = graphene.Node.Field()
     members = graphene.ConnectionField(MemberConnection)
     me = graphene.Field(MemberType)
-    notifications = graphene.relay.ConnectionField(NotificationConnection)
 
     @staticmethod
     @superuser_required

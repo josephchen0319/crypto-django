@@ -50,22 +50,18 @@ class Following(models.Model):
     updated_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.crypto_name
+        return self.crypto_id
 
 
-class Saved_filter_group(models.Model):
+class SavedFilterGroup(models.Model):
     member = models.ForeignKey('Member', on_delete=models.CASCADE)
     group_name = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
-    filters = models.ManyToManyField(
-        'filter.Filter',
-        related_name='saved_filter_group_filter',
-    )
-    first_argument = models.IntegerField(blank=True, null=True)
-    second_argument = models.IntegerField(blank=True, null=True)
-    third_argument = models.IntegerField(blank=True, null=True)
-    fourth_argument = models.IntegerField(blank=True, null=True)
-    fifth_argument = models.IntegerField(blank=True, null=True)
+    # filters = models.ManyToManyField(
+    #     'filter.Filter',
+    #     related_name='saved_filter_group_filter',
+    # )
+    # filter_details = models.OneToManyField()
     created_time = models.DateTimeField(auto_now_add=True)
     updated_time = models.DateTimeField(auto_now=True)
 
@@ -73,14 +69,18 @@ class Saved_filter_group(models.Model):
         return self.group_name
 
 
-# class Filter_group_detail(models.Model):
-#     group = models.ForeignKey('Saved_filter_group', on_delete=models.CASCADE)
-#     filter = models.ForeignKey('filter.Filter', on_delete=models.CASCADE)
-#     first_argument = models.BigIntegerField(blank=True, null=True)
-#     second_argument = models.BigIntegerField(blank=True, null=True)
-#     third_argument = models.BigIntegerField(blank=True, null=True)
-#     fourth_argument = models.BigIntegerField(blank=True, null=True)
-#     fifth_argument = models.BigIntegerField(blank=True, null=True)
+class FilterDetail(models.Model):
+    filter_group = models.ForeignKey(
+        'SavedFilterGroup', on_delete=models.CASCADE)
+    filter = models.ForeignKey('filter.Filter', on_delete=models.CASCADE)
+    state = models.CharField(max_length=50)
+    first_argument = models.BigIntegerField(blank=True, null=True)
+    second_argument = models.BigIntegerField(blank=True, null=True)
+    third_argument = models.BigIntegerField(blank=True, null=True)
+    fourth_argument = models.BigIntegerField(blank=True, null=True)
+    fifth_argument = models.BigIntegerField(blank=True, null=True)
+    created_time = models.DateTimeField(auto_now_add=True)
+    updated_time = models.DateTimeField(auto_now=True)
 
-#     def __str__(self):
-#         return self.filter.filter_content
+    def __str__(self):
+        return self.state
