@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'web_crawler.apps.WebCrawlerConfig',
     'graphene_django',
     'requests',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -52,9 +53,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'cryptocracy.urls'
+CORS_ORIGIN_ALLOW_ALL = True
 
 TEMPLATES = [
     {

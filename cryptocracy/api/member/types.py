@@ -14,6 +14,7 @@ class UserType(DjangoObjectType):
 class MemberType(graphene.ObjectType):
     class Meta:
         interfaces = (graphene.Node,)
+
     state = graphene.String()
     user = graphene.Field(UserType)
     notifications = graphene.relay.ConnectionField(
