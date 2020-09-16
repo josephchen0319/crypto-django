@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import graphene
 from member import models
 from graphql_jwt.decorators import login_required, superuser_required
+from graphql import GraphQLError
 
 
 class CreateMember(graphene.relay.ClientIDMutation):
@@ -10,6 +11,7 @@ class CreateMember(graphene.relay.ClientIDMutation):
         username = graphene.String(required=True)
         email = graphene.String(required=True)
         password = graphene.String(required=True)
+        confirm_password = graphene.String(required=True)
         first_name = graphene.String(default_value="")
         last_name = graphene.String(default_value="")
     user = graphene.Field(UserType)
@@ -17,12 +19,24 @@ class CreateMember(graphene.relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **input):
-        user = User.objects.create_user(
-            username=input['username'], email=input['email'], password=input['password'], first_name=input['first_name'], last_name=input['last_name'])
-        state = "Verified"
-        member = models.Member.objects.create(user=user, state=state)
-        member.save()
-        return cls(user=user, state=state)
+        try:
+            users = User.objects.all()
+            username_list = users.values_list('username', flat=True)
+            if input['username'] in username_list:
+                raise GraphQLError("username has been taken")
+            if input['confirm_password'] == input['password']:
+                user = User.objects.create_user(
+                    username=input['username'], email=input['email'], password=input['password'], first_name=input['first_name'], last_name=input['last_name'])
+                state = "Verified"
+                member = models.Member.objects.create(
+                    user=user, state=state)
+                member.save()
+                return cls(user=user, state=state)
+            else:
+                raise GraphQLError(
+                    "Confirmation password doesn't match your password")
+        except Exception:
+            raise GraphQLError('Something went wrong, please try again')
 
 
 class UpdateMember(graphene.relay.ClientIDMutation):
