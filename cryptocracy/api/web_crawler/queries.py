@@ -1,4 +1,4 @@
-from graphene import ResolveInfo, ObjectType, String, Boolean, ID, Int, Field, Float, Date, DateTime, List
+from graphene import ResolveInfo, ObjectType, String, Boolean, ID, Int, Field, Float, Date, List, types
 from web_crawler.coininfo import Order, CoinInfo
 import json
 from collections import namedtuple
@@ -6,6 +6,8 @@ from web_crawler.coininfo import CoinInfo
 from web_crawler.tweets_getter import TwitterClient, TwitterAnalyzer, filter_amount
 import numpy as np
 import pandas as pd
+import datetime
+from graphql.language import ast
 
 
 class Description(ObjectType):
@@ -42,15 +44,23 @@ class Currency(ObjectType):
     btc = String()
 
 
+class AthDate(ObjectType):
+    usd = String()
+
+
+class AtlDate(ObjectType):
+    usd = String()
+
+
 class MarketData(ObjectType):
     current_price = Field(Currency)
     roi = Field(Currency)
     ath = Field(Currency)
     ath_change_percentage = Field(Currency)
-    ath_date = Field(Currency)
+    ath_date = Field(AthDate)
     atl = Field(Currency)
     atl_change_percentage = Field(Currency)
-    atl_date = Field(Currency)
+    atl_date = Field(AtlDate)
     market_cap = Field(Currency)
     market_cap_rank = Field(Currency)
     fully_diluted_valuation = Field(Currency)
@@ -81,7 +91,7 @@ class MarketData(ObjectType):
     total_supply = Float()
     max_supply = Float()
     circulating_supply = Float()
-    last_updated = DateTime()
+    last_updated = String()
 
 
 class CommunityData(ObjectType):
@@ -138,9 +148,9 @@ class Ticker(ObjectType):
     converted_volume = Field(TickerConversion)
     trust_score = String()
     bid_ask_spread_percentage = Float()
-    timestamp = DateTime()
-    last_traded_at = DateTime()
-    last_fetch_at = DateTime()
+    timestamp = String()
+    last_traded_at = String()
+    last_fetch_at = String()
     is_anomaly = Boolean()
     is_stale = Boolean()
     trade_url = String()
@@ -159,7 +169,7 @@ class CoinDetail(ObjectType):
     links = Field(Links)
     image = Field(Image)
     country_origin = String()
-    genesis_date = Date()
+    genesis_date = String()
     sentiment_votes_up_percentage = Float()
     sentiment_votes_down_percentage = Float()
     market_cap_rank = Int()
@@ -174,7 +184,7 @@ class CoinDetail(ObjectType):
     developer_data = Field(DeveloperData)
     public_interest_stats = Field(PublicInterestStats)
     status_updates = Field(type(String()))
-    last_updated = DateTime()
+    last_updated = String()
     tickers = List(Ticker)
 
 
@@ -205,11 +215,11 @@ class CoinMarketType(ObjectType):
     max_supply = Float()
     ath = Float()
     ath_change_percentage = Float()
-    ath_date = Date()
+    ath_date = String()
     atl = Float()
     atl_change_percentage = Float()
-    atl_date = Date()
-    last_updated = DateTime()
+    atl_date = String()
+    last_updated = String()
     price_change_percentage_14d_in_currency = Float()
     price_change_percentage_1h_in_currency = Float()
     price_change_percentage_1y_in_currency = Float()
