@@ -237,6 +237,11 @@ class TwitterUser(ObjectType):
     hashtags = List(type(String()))
 
 
+class CoinSimpleType(ObjectType):
+    id = String()
+    symbol = String()
+
+
 def _json_object_hook(d):
     if 'try' in d:
         d.pop('try')
@@ -251,10 +256,13 @@ class Query(ObjectType):
     coinlist = List(CoinMarketType, vs_currency=String(), order=String(),
                     page=Int(), per_page=Int())
 
-    @ staticmethod
+    coin_info = CoinInfo()
+    twitter_client = TwitterClient()
+    tweet_analyzer = TwitterAnalyzer()
+
+    @staticmethod
     def resolve_coinlist(parent, info, **args):
-        coin_info = CoinInfo()
-        coinlist = coin_info.list_all_coins(order=args.get(
+        coinlist = Query.coin_info.list_all_coins(order=args.get(
             "order"), vs_currency=args.get("vs_currency"), page=args.get("page"), per_page=args.get("per_page"))
         return json2obj(coinlist.content)
 
@@ -262,32 +270,30 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_coin_detail(parent, info, **args):
-        coin_info = CoinInfo()
-        coin_detail = coin_info.get_particular_coin(id=args.get("id"))
+        coin_detail = Query.coin_info.get_particular_coin(id=args.get("id"))
         return json2obj(coin_detail.content)
 
     twitter_users = List(TwitterUser)
 
     @staticmethod
     def resolve_twitter_users(parent, info):
-        twitter_client = TwitterClient()
-        tweet_analyzer = TwitterAnalyzer()
+
         query = "crypto"
         df = pd.DataFrame()
         for i in range(1, 50):
-            users = twitter_client.get_relevant_users(
+            users = Query.twitter_client.get_relevant_users(
                 query, count=20, page=i)
-            user_df = tweet_analyzer.users_to_dataframe(users)
+            user_df = Query.tweet_analyzer.users_to_dataframe(users)
             df = df.append(user_df, ignore_index=True)
 
         filtered_coins = []
         hashtag_list = []
         for d in df['description']:
-            coins = tweet_analyzer.get_coins(d)
+            coins = Query.tweet_analyzer.get_coins(d)
             coins = list(filter(filter_amount, coins))
             # coins = ' '.join(coins)
             filtered_coins.append(coins)
-            hashtags = tweet_analyzer.get_hashtags(d)
+            hashtags = Query.tweet_analyzer.get_hashtags(d)
             # hashtags = ' '.join(hashtags)
             hashtag_list.append(hashtags)
 
@@ -296,3 +302,10 @@ class Query(ObjectType):
         json_data = df.to_json(orient="split")
         # print(df)
         return json2obj(json_data)
+
+    coin_simple_list = List(CoinSimpleType)
+
+    @staticmethod
+    def resolve_coin_simple_list(parent, info):
+        simple_list = Query.coin_info.get_simple_coin_list()
+        return json2obj(simple_list.content)

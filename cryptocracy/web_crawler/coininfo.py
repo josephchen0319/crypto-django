@@ -37,6 +37,11 @@ class CoinInfo:
             self.base_url+f'/coins/{id}?localization=false')
         return r
 
+    def get_simple_coin_list(self):
+        r = requests.get(
+            self.base_url+'/coins/list'
+        )
+        return r
 
 # if __name__ == "__main__":
     # Check server status
