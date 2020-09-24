@@ -1,6 +1,8 @@
 import requests
 import json
 from enum import Enum
+import linecache
+from itertools import islice
 
 
 class Order(Enum):
@@ -22,13 +24,56 @@ class CoinInfo:
         r = requests.get(COINGECKO_BASE_URL+"/ping")
         return r
 
-    def list_all_coins(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=100, ids=None):
+    def list_all_coins(self, page=1):
+        file = "coin_info.txt"
+        r = "["
+        per_page = 100
+        coins = ""
+        with open(file, 'r') as f:
+            lines = islice(f, per_page * (page-1), per_page*page)
+            for i in lines:
+                i += ","
+                coins += i
+        r += coins
+
+        if r.endswith(","):
+            r = r[:-2] + "]"
+
+        return r
+
+    # def list_all_coins(self):
+    #     file = "coin_info.txt"
+    #     r = "["
+    #     with open(file, 'r') as f:
+    #         line = f.readline()
+    #         line += ","
+    #         r += line
+    #         while f.readline():
+    #             line = f.readline()
+    #             line += ","
+    #             r += line
+
+    #     if r.endswith(","):
+    #         r = r[:-2] + "]"
+    #         print(type(r))
+
+    #     return r
+
+    # def list_all_coins(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=100, ids=None):
+    #     price_change_percentage = '1h,24h,7d,30d,200d,1y'
+    #     ids = "" if ids == None else ','.join(ids)
+    #     url = self.base_url + f'/coins/markets?vs_currency={vs_currency}'
+    #     # per_page from 1 - 250
+    #     paging = f'&page={page}&per_page={per_page}'
+    #     query = f'&order={order}&price_change_percentage={price_change_percentage}&ids={ids}'
+    #     r = requests.get(url+paging+query)
+    #     return r
+
+    def get_coins(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=250):
         price_change_percentage = '1h,24h,7d,30d,200d,1y'
-        ids = "" if ids == None else ','.join(ids)
         url = self.base_url + f'/coins/markets?vs_currency={vs_currency}'
-        # per_page from 1 - 250
         paging = f'&page={page}&per_page={per_page}'
-        query = f'&order={order}&price_change_percentage={price_change_percentage}&ids={ids}'
+        query = f'&order={order}&price_change_percentage={price_change_percentage}'
         r = requests.get(url+paging+query)
         return r
 

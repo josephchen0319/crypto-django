@@ -253,8 +253,7 @@ def json2obj(data):
 
 
 class Query(ObjectType):
-    coinlist = List(CoinMarketType, vs_currency=String(), order=String(),
-                    page=Int(), per_page=Int())
+    coinlist = List(CoinMarketType, page=Int())
 
     coin_info = CoinInfo()
     twitter_client = TwitterClient()
@@ -262,9 +261,10 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_coinlist(parent, info, **args):
-        coinlist = Query.coin_info.list_all_coins(order=args.get(
-            "order"), vs_currency=args.get("vs_currency"), page=args.get("page"), per_page=args.get("per_page"))
-        return json2obj(coinlist.content)
+        # coinlist = Query.coin_info.list_all_coins(order=args.get(
+        #     "order"), vs_currency=args.get("vs_currency"), page=args.get("page"), per_page=args.get("per_page"))
+        coinlist = Query.coin_info.list_all_coins(page=args.get("page"))
+        return json2obj(coinlist)
 
     coin_detail = Field(CoinDetail, id=String())
 

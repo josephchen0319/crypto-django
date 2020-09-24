@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'requests',
     'corsheaders',
+    'background_task',
 ]
 
 MIDDLEWARE = [
