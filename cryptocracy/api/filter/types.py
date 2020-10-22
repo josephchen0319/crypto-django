@@ -12,6 +12,7 @@ class FilterType(graphene.ObjectType):
     category = graphene.String()
     filter_name = graphene.String()
     filter_content = graphene.String()
+    filter_to_api_field = graphene.String()
     created_time = graphene.DateTime()
     updated_time = graphene.DateTime()
     filter_details = graphene.relay.ConnectionField(

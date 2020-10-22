@@ -13,6 +13,7 @@ class CreateFilter(graphene.relay.ClientIDMutation):
         category = graphene.String()
         filter_name = graphene.String()
         filter_content = graphene.String()
+        filter_to_api_field = graphene.String()
 
     filter = graphene.Field('api.filter.types.FilterType')
 
@@ -23,6 +24,7 @@ class CreateFilter(graphene.relay.ClientIDMutation):
             'category': input_data['category'],
             'filter_name': input_data['filter_name'],
             'filter_content': input_data['filter_content'],
+            'filter_to_api_field': input_data['filter_to_api_field'],
         })
         serializer.is_valid(raise_exception=True)
         filter = serializer.save()

@@ -1,4 +1,4 @@
-from graphene import ResolveInfo, ObjectType, String, Boolean, ID, Int, Field, Float, Date, List, types
+from graphene import InputObjectType, ResolveInfo, ObjectType, String, Boolean, ID, Int, Field, Float, Date, List, types
 from web_crawler.coininfo import Order, CoinInfo
 import json
 from collections import namedtuple
@@ -242,6 +242,12 @@ class CoinSimpleType(ObjectType):
     symbol = String()
 
 
+class SearchFilteredResultsInputType(InputObjectType):
+    filter_to_api_field = String()
+    first_argument = Float()
+    second_argument = Float()
+
+
 def _json_object_hook(d):
     if 'try' in d:
         d.pop('try')
@@ -263,7 +269,8 @@ class Query(ObjectType):
     def resolve_coinlist(parent, info, **args):
         # coinlist = Query.coin_info.list_all_coins(order=args.get(
         #     "order"), vs_currency=args.get("vs_currency"), page=args.get("page"), per_page=args.get("per_page"))
-        coinlist = Query.coin_info.list_all_coins(page=args.get("page"))
+        coinlist = Query.coin_info.list_current_page_coins(
+            page=args.get("page"))
         return json2obj(coinlist)
 
     coin_detail = Field(CoinDetail, id=String())
@@ -272,6 +279,31 @@ class Query(ObjectType):
     def resolve_coin_detail(parent, info, **args):
         coin_detail = Query.coin_info.get_particular_coin(id=args.get("id"))
         return json2obj(coin_detail.content)
+
+    filtered_coinlist = List(
+        CoinMarketType, filter_details=List(SearchFilteredResultsInputType))
+
+    coin_list_by_ids = List(CoinMarketType, ids=String())
+
+    @staticmethod
+    def resolve_coin_list_by_ids(parent, info, **args):
+        coinlist = Query.coin_info.get_coins_by_id(ids=args.get("ids"))
+        return json2obj(coinlist.content)
+
+    @staticmethod
+    def resolve_filtered_coinlist(parent, info, **args):
+        coinlist = json.loads(Query.coin_info.list_all_coins())
+        filtered_list = []
+        for c in coinlist:
+            flag = True
+            for filterDetail in args.get("filter_details"):
+                if not c[filterDetail.filter_to_api_field] or not(c[filterDetail.filter_to_api_field] >= filterDetail.first_argument and c[filterDetail.filter_to_api_field] <= filterDetail.second_argument):
+                    flag = False
+                    break
+            if flag == True:
+                filtered_list.append(c)
+
+        return filtered_list
 
     twitter_users = List(TwitterUser)
 

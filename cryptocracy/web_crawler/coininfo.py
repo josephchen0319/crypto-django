@@ -24,7 +24,7 @@ class CoinInfo:
         r = requests.get(COINGECKO_BASE_URL+"/ping")
         return r
 
-    def list_all_coins(self, page=1):
+    def list_current_page_coins(self, page=1):
         file = "coin_info.txt"
         r = "["
         per_page = 100
@@ -38,36 +38,35 @@ class CoinInfo:
 
         if r.endswith(","):
             r = r[:-2] + "]"
-
         return r
 
-    # def list_all_coins(self):
-    #     file = "coin_info.txt"
-    #     r = "["
-    #     with open(file, 'r') as f:
-    #         line = f.readline()
-    #         line += ","
-    #         r += line
-    #         while f.readline():
-    #             line = f.readline()
-    #             line += ","
-    #             r += line
+    def list_all_coins(self):
+        file = "coin_info.txt"
+        r = "["
+        with open(file, 'r') as f:
+            line = f.readline()
+            line += ","
+            r += line
+            while True:
+                line = f.readline()
+                if line:
+                    line += ","
+                    r += line
+                else:
+                    break
+        if r.endswith(","):
+            r = r[:-2] + "]"
+            print(type(r))
+            return r
 
-    #     if r.endswith(","):
-    #         r = r[:-2] + "]"
-    #         print(type(r))
-
-    #     return r
-
-    # def list_all_coins(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=100, ids=None):
-    #     price_change_percentage = '1h,24h,7d,30d,200d,1y'
-    #     ids = "" if ids == None else ','.join(ids)
-    #     url = self.base_url + f'/coins/markets?vs_currency={vs_currency}'
-    #     # per_page from 1 - 250
-    #     paging = f'&page={page}&per_page={per_page}'
-    #     query = f'&order={order}&price_change_percentage={price_change_percentage}&ids={ids}'
-    #     r = requests.get(url+paging+query)
-    #     return r
+    def get_coins_by_id(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=100, ids=None):
+        price_change_percentage = '1h,24h,7d,30d,200d,1y'
+        url = self.base_url + f'/coins/markets?vs_currency={vs_currency}'
+        # per_page from 1 - 250
+        paging = f'&page={page}&per_page={per_page}'
+        query = f'&order={order}&price_change_percentage={price_change_percentage}&ids={ids}'
+        r = requests.get(url+paging+query)
+        return r
 
     def get_coins(self, vs_currency="usd", order=Order.MARKET_CAP_DESC.value, page=1, per_page=250):
         price_change_percentage = '1h,24h,7d,30d,200d,1y'
